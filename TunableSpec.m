@@ -403,8 +403,8 @@ CGPoint RectCenter(CGRect rect) {
 
         CGSize size = [contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
         CGSize limitSize = [[[UIApplication sharedApplication] keyWindow] frame].size;
-        size.width = MIN(size.width, limitSize.width);
-        size.height = MIN(size.height, limitSize.height);
+        size.width = MIN(size.width, limitSize.width-20);
+        size.height = MIN(size.height, limitSize.height-20);
         CGRect windowBounds = (CGRect){CGPointZero, size};
         
         
