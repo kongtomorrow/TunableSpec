@@ -1,0 +1,320 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BE05A7E817C55B9C00F0B252 /* MainSpec.json in Resources */ = {isa = PBXBuildFile; fileRef = BE05A7E717C55B9C00F0B252 /* MainSpec.json */; };
+		BE05A89117C8002A00F0B252 /* TunableSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE05A88F17C8002A00F0B252 /* TunableSpec.m */; };
+		BE1B52FE172F5A5400AA82FB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1B52FD172F5A5400AA82FB /* UIKit.framework */; };
+		BE1B5300172F5A5400AA82FB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1B52FF172F5A5400AA82FB /* Foundation.framework */; };
+		BE1B5302172F5A5400AA82FB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1B5301172F5A5400AA82FB /* CoreGraphics.framework */; };
+		BE1B5308172F5A5400AA82FB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BE1B5306172F5A5400AA82FB /* InfoPlist.strings */; };
+		BE1B530A172F5A5400AA82FB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1B5309172F5A5400AA82FB /* main.m */; };
+		BE1B530E172F5A5400AA82FB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1B530D172F5A5400AA82FB /* AppDelegate.m */; };
+		BE1B5310172F5A5400AA82FB /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = BE1B530F172F5A5400AA82FB /* Default.png */; };
+		BE1B5312172F5A5400AA82FB /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BE1B5311172F5A5400AA82FB /* Default@2x.png */; };
+		BE1B5314172F5A5400AA82FB /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BE1B5313172F5A5400AA82FB /* Default-568h@2x.png */; };
+		BE1B5317172F5A5400AA82FB /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BE1B5316172F5A5400AA82FB /* ViewController.m */; };
+		BE1B531A172F5A5400AA82FB /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE1B5318172F5A5400AA82FB /* ViewController.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		BE05A7E717C55B9C00F0B252 /* MainSpec.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = MainSpec.json; sourceTree = "<group>"; };
+		BE05A88F17C8002A00F0B252 /* TunableSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TunableSpec.m; path = ../../TunableSpec.m; sourceTree = "<group>"; };
+		BE05A89017C8002A00F0B252 /* TunableSpec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TunableSpec.h; path = ../../TunableSpec.h; sourceTree = "<group>"; };
+		BE1B52FA172F5A5400AA82FB /* TunerDriver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TunerDriver.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE1B52FD172F5A5400AA82FB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		BE1B52FF172F5A5400AA82FB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BE1B5301172F5A5400AA82FB /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		BE1B5305172F5A5400AA82FB /* TunerDriver-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TunerDriver-Info.plist"; sourceTree = "<group>"; };
+		BE1B5307172F5A5400AA82FB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		BE1B5309172F5A5400AA82FB /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BE1B530B172F5A5400AA82FB /* TunerDriver-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TunerDriver-Prefix.pch"; sourceTree = "<group>"; };
+		BE1B530C172F5A5400AA82FB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		BE1B530D172F5A5400AA82FB /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		BE1B530F172F5A5400AA82FB /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		BE1B5311172F5A5400AA82FB /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		BE1B5313172F5A5400AA82FB /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		BE1B5315172F5A5400AA82FB /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		BE1B5316172F5A5400AA82FB /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		BE1B5319172F5A5400AA82FB /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BE1B52F7172F5A5400AA82FB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE1B52FE172F5A5400AA82FB /* UIKit.framework in Frameworks */,
+				BE1B5300172F5A5400AA82FB /* Foundation.framework in Frameworks */,
+				BE1B5302172F5A5400AA82FB /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BE1B52F1172F5A5400AA82FB = {
+			isa = PBXGroup;
+			children = (
+				BE1B5303172F5A5400AA82FB /* TunerDriver */,
+				BE1B52FC172F5A5400AA82FB /* Frameworks */,
+				BE1B52FB172F5A5400AA82FB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BE1B52FB172F5A5400AA82FB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BE1B52FA172F5A5400AA82FB /* TunerDriver.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BE1B52FC172F5A5400AA82FB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BE1B52FD172F5A5400AA82FB /* UIKit.framework */,
+				BE1B52FF172F5A5400AA82FB /* Foundation.framework */,
+				BE1B5301172F5A5400AA82FB /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BE1B5303172F5A5400AA82FB /* TunerDriver */ = {
+			isa = PBXGroup;
+			children = (
+				BE05A89017C8002A00F0B252 /* TunableSpec.h */,
+				BE05A88F17C8002A00F0B252 /* TunableSpec.m */,
+				BE1B530C172F5A5400AA82FB /* AppDelegate.h */,
+				BE1B530D172F5A5400AA82FB /* AppDelegate.m */,
+				BE1B5315172F5A5400AA82FB /* ViewController.h */,
+				BE1B5316172F5A5400AA82FB /* ViewController.m */,
+				BE1B5318172F5A5400AA82FB /* ViewController.xib */,
+				BE1B5304172F5A5400AA82FB /* Supporting Files */,
+			);
+			path = TunerDriver;
+			sourceTree = "<group>";
+		};
+		BE1B5304172F5A5400AA82FB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BE1B5305172F5A5400AA82FB /* TunerDriver-Info.plist */,
+				BE1B5306172F5A5400AA82FB /* InfoPlist.strings */,
+				BE1B5309172F5A5400AA82FB /* main.m */,
+				BE1B530B172F5A5400AA82FB /* TunerDriver-Prefix.pch */,
+				BE1B530F172F5A5400AA82FB /* Default.png */,
+				BE1B5311172F5A5400AA82FB /* Default@2x.png */,
+				BE1B5313172F5A5400AA82FB /* Default-568h@2x.png */,
+				BE05A7E717C55B9C00F0B252 /* MainSpec.json */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BE1B52F9172F5A5400AA82FB /* TunerDriver */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BE1B531D172F5A5400AA82FB /* Build configuration list for PBXNativeTarget "TunerDriver" */;
+			buildPhases = (
+				BE1B52F6172F5A5400AA82FB /* Sources */,
+				BE1B52F7172F5A5400AA82FB /* Frameworks */,
+				BE1B52F8172F5A5400AA82FB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TunerDriver;
+			productName = TunerDriver;
+			productReference = BE1B52FA172F5A5400AA82FB /* TunerDriver.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BE1B52F2172F5A5400AA82FB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Ken Ferry";
+			};
+			buildConfigurationList = BE1B52F5172F5A5400AA82FB /* Build configuration list for PBXProject "TunerDriver" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = BE1B52F1172F5A5400AA82FB;
+			productRefGroup = BE1B52FB172F5A5400AA82FB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BE1B52F9172F5A5400AA82FB /* TunerDriver */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BE1B52F8172F5A5400AA82FB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE05A7E817C55B9C00F0B252 /* MainSpec.json in Resources */,
+				BE1B5308172F5A5400AA82FB /* InfoPlist.strings in Resources */,
+				BE1B5310172F5A5400AA82FB /* Default.png in Resources */,
+				BE1B5312172F5A5400AA82FB /* Default@2x.png in Resources */,
+				BE1B5314172F5A5400AA82FB /* Default-568h@2x.png in Resources */,
+				BE1B531A172F5A5400AA82FB /* ViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BE1B52F6172F5A5400AA82FB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE05A89117C8002A00F0B252 /* TunableSpec.m in Sources */,
+				BE1B530A172F5A5400AA82FB /* main.m in Sources */,
+				BE1B530E172F5A5400AA82FB /* AppDelegate.m in Sources */,
+				BE1B5317172F5A5400AA82FB /* ViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		BE1B5306172F5A5400AA82FB /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BE1B5307172F5A5400AA82FB /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		BE1B5318172F5A5400AA82FB /* ViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BE1B5319172F5A5400AA82FB /* en */,
+			);
+			name = ViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BE1B531B172F5A5400AA82FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		BE1B531C172F5A5400AA82FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BE1B531E172F5A5400AA82FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TunerDriver/TunerDriver-Prefix.pch";
+				INFOPLIST_FILE = "TunerDriver/TunerDriver-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		BE1B531F172F5A5400AA82FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TunerDriver/TunerDriver-Prefix.pch";
+				INFOPLIST_FILE = "TunerDriver/TunerDriver-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BE1B52F5172F5A5400AA82FB /* Build configuration list for PBXProject "TunerDriver" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BE1B531B172F5A5400AA82FB /* Debug */,
+				BE1B531C172F5A5400AA82FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BE1B531D172F5A5400AA82FB /* Build configuration list for PBXNativeTarget "TunerDriver" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BE1B531E172F5A5400AA82FB /* Debug */,
+				BE1B531F172F5A5400AA82FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BE1B52F2172F5A5400AA82FB /* Project object */;
+}

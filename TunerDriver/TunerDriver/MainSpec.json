@@ -1,0 +1,14 @@
+[
+  {
+    "sliderMaxValue" : 1000,
+    "key" : "TopSpacing",
+    "label" : "Top",
+    "sliderValue" : 20,
+    "sliderMinValue" : 0
+  },
+  {
+    "key" : "RightAlignLabel",
+    "label" : "Align Right",
+    "switchValue" : false
+  }
+]
