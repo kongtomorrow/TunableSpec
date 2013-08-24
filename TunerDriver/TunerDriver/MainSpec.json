@@ -1,8 +1,8 @@
 [
   {
-    "sliderMaxValue" : 1000,
+    "sliderMaxValue" : 500,
     "key" : "TopSpacing",
-    "label" : "Top",
+    "label" : "Top Spacing",
     "sliderValue" : 20,
     "sliderMinValue" : 0
   },
