@@ -3,7 +3,8 @@
 //  TunerDriver
 //
 //  Created by Ken Ferry on 4/29/13.
-//  Copyright (c) 2013 Ken Ferry. All rights reserved.
+//  Copyright (c) 2013 Ken Ferry.
+//  See LICENSE for details.
 //
 
 #import "TunableSpec.h"
