@@ -3,7 +3,8 @@
 //  TunerDriver
 //
 //  Created by Ken Ferry on 4/29/13.
-//  Copyright (c) 2013 Ken Ferry. All rights reserved.
+//  Copyright (c) 2013 Ken Ferry.
+//  See LICENSE for details.
 //
 
 /* TunableSpec provides live tweaking of UI spec values in a running app. From the source code perspective, it's similar to NSUserDefaults, but the values are backed by a JSON file. It's able to display UI for tuning the values, and a share button exports a new JSON file to be checked back into source control.
