@@ -320,10 +320,10 @@ static NSMutableDictionary *sSpecsByName;
 
 
 - (UIView *)makeWindowContentView {
-    UIView *contentView = [[UIView alloc] init];
-    [contentView setBackgroundColor:[[UIColor blackColor] colorWithAlphaComponent:0.6]];
-    [[contentView layer] setBorderColor:[[UIColor whiteColor] CGColor]];
-    [[contentView layer] setCornerRadius:5];
+    UIView *mainView = [[UIView alloc] init];
+    [mainView setBackgroundColor:[[UIColor blackColor] colorWithAlphaComponent:0.6]];
+    [[mainView layer] setBorderColor:[[UIColor whiteColor] CGColor]];
+    [[mainView layer] setCornerRadius:5];
     
     UIView *lastControl = nil;
     for (_SpecItem *def in _specItems) {
@@ -337,15 +337,15 @@ static NSMutableDictionary *sSpecsByName;
         id views = lastControl ? NSDictionaryOfVariableBindings(label, control, lastControl) : NSDictionaryOfVariableBindings(label, control);
         [views enumerateKeysAndObjectsUsingBlock:^(id key, id view, BOOL *stop) {
             [view setTranslatesAutoresizingMaskIntoConstraints:NO];
-            [contentView addSubview:view];
+            [mainView addSubview:view];
         }];
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[label]-[control]-(==20@700,>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
+        [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[label]-[control]-(==20@700,>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
         
         if (lastControl) {
-            [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[lastControl]-[control]" options:0 metrics:nil views:views]];
-            [contentView addConstraint:[NSLayoutConstraint constraintWithItem:lastControl attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:control attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+            [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[lastControl]-[control]" options:0 metrics:nil views:views]];
+            [mainView addConstraint:[NSLayoutConstraint constraintWithItem:lastControl attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:control attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
         } else {
-            [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[control]" options:0 metrics:nil views:views]];
+            [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[control]" options:0 metrics:nil views:views]];
         }
         lastControl = control;
     }
@@ -359,28 +359,47 @@ static NSMutableDictionary *sSpecsByName;
         [button setTranslatesAutoresizingMaskIntoConstraints:NO];
         [views setObject:button forKey:op];
         [self setValue:button forKey:[op stringByAppendingString:@"Button"]];
-        [contentView addSubview:button];
+        [mainView addSubview:button];
     }
     
-    [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=20)-[revert(==share)]-[share]-(>=20)-|" options:NSLayoutFormatAlignAllTop metrics:nil views:views]];
-    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:views[@"revert"] attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:-10]];
+    [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=20)-[revert(==share)]-[share]-(>=20)-|" options:NSLayoutFormatAlignAllTop metrics:nil views:views]];
+    [mainView addConstraint:[NSLayoutConstraint constraintWithItem:views[@"revert"] attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:mainView attribute:NSLayoutAttributeCenterX multiplier:1 constant:-10]];
     
     if (lastControl) {
         [views setObject:lastControl forKey:@"lastControl"];
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[lastControl]-[share]-|" options:0 metrics:nil views:views]];
+        [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[lastControl]-[share]-|" options:0 metrics:nil views:views]];
     } else {
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[share]-|" options:0 metrics:nil views:views]];
+        [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[share]-|" options:0 metrics:nil views:views]];
     }
     
+    
+    // We would like to add a close button on the top left corner of the mainView
+    // It sticks out a bit from the mainView. In order to have the part that sticks out stay tappable, we make a contentView that completely contains the closeButton and the mainView.
+
     UIButton *closeButton = [[UIButton alloc] init];
     [closeButton addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
     [closeButton setImage:CloseImage() forState:UIControlStateNormal];
+    [closeButton setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    [closeButton setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     
+    UIView *contentView = [[UIView alloc] init];
+    [mainView setTranslatesAutoresizingMaskIntoConstraints:NO];
     [closeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [contentView addSubview:mainView];
     [contentView addSubview:closeButton];
-    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:closeButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1 constant:5]];
-    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:closeButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeTop multiplier:1 constant:5]];
     
+    // perch close button center on contentView corner, slightly inset
+    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:closeButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:mainView attribute:NSLayoutAttributeLeading multiplier:1 constant:5]];
+    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:closeButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:mainView attribute:NSLayoutAttributeTop multiplier:1 constant:5]];
+    
+    // center mainView in contentView
+    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:mainView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:mainView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+
+    // align edge of close button with contentView
+    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:closeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:closeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+
     return contentView;
 }
 
@@ -404,9 +423,9 @@ CGPoint RectCenter(CGRect rect) {
 
         CGSize size = [contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
         CGSize limitSize = [[[UIApplication sharedApplication] keyWindow] frame].size;
-        size.width = MIN(size.width, limitSize.width-20);
-        size.height = MIN(size.height, limitSize.height-20);
-        CGRect windowBounds = (CGRect){CGPointZero, size};
+        size.width = MIN(size.width, limitSize.width);
+        size.height = MIN(size.height, limitSize.height);
+        CGRect windowBounds = CGRectMake(0, 0, size.width, size.height);
         
         
         UIWindow *window = [[UIWindow alloc] init];
