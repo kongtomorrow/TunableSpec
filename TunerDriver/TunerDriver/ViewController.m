@@ -47,13 +47,15 @@
         case UIGestureRecognizerStateCancelled: {
             CGFloat vel = [reco velocityInView:[self view]].y;
             CGFloat dist = [reco translationInView:[self view]].y;
-            CGFloat velNormed = vel / MAX(abs(dist), 0.1);
+            CGFloat distMadeSafeForDivision = MAX(abs(dist), 0.1) * ((dist < 0) ? -1 : 1);
+            
+            CGFloat velInUnitSpace = vel / distMadeSafeForDivision * -1 /* positive velInUnitSpace is always toward final loc. So should be negative whenever raw velocity and distance are of the same sign. For example, above resting pos and moving up should be a negative number in unit space. */;
             
             [UIView animateWithDuration:[spec doubleForKey:@"SpringDuration"]
                                   delay:0
                  usingSpringWithDamping:[spec doubleForKey:@"SpringDamping"]
-                  initialSpringVelocity:velNormed
-                                options:UIViewAnimationOptionBeginFromCurrentState
+                  initialSpringVelocity:velInUnitSpace
+                                options:0
                              animations:^{
                                  [[self yConstraint] setConstant:0];
                                  [[self view] layoutIfNeeded];
