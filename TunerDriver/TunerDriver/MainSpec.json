@@ -1,9 +1,16 @@
 [
   {
-    "sliderMaxValue" : 500,
-    "key" : "TopSpacing",
-    "label" : "Top Spacing",
-    "sliderValue" : 20,
+    "sliderMaxValue" : 2,
+    "key" : "SpringDuration",
+    "label" : "Duration",
+    "sliderValue" : 0.4191617,
+    "sliderMinValue" : 0
+  },
+  {
+    "sliderMaxValue" : 1,
+    "key" : "SpringDamping",
+    "label" : "Damping",
+    "sliderValue" : 0.6407186,
     "sliderMinValue" : 0
   },
   {

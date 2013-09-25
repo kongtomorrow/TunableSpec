@@ -12,7 +12,7 @@
 
 @interface ViewController ()
 @property (strong, nonatomic) IBOutlet UILabel *label;
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *topSpaceConstraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *yConstraint;
 
 @end
 
@@ -25,15 +25,46 @@
         [[owner label] setTextAlignment:flag ? NSTextAlignmentRight : NSTextAlignmentLeft];
     }];
     
-    [spec withDoubleForKey:@"TopSpacing" owner:self maintain:^(ViewController *owner, double doubleValue) {
-        [[owner topSpaceConstraint] setConstant:doubleValue];
-    }];
-    
     [[self view] addGestureRecognizer:[spec twoFingerTripleTapGestureRecognizer]];
 
     [super viewDidLoad];
 }
 
 
+- (IBAction)handlePan:(UIPanGestureRecognizer *)reco {
+    TunableSpec *spec = [TunableSpec specNamed:@"MainSpec"];
+    switch ([reco state]) {
+        case UIGestureRecognizerStateBegan: {
+        }
+            break;
+            
+        case UIGestureRecognizerStateChanged: {
+            CGPoint translation = [reco translationInView:[self view]];
+            [[self yConstraint] setConstant:translation.y];
+        }
+            break;
+        case UIGestureRecognizerStateEnded:
+        case UIGestureRecognizerStateCancelled: {
+            CGFloat vel = [reco velocityInView:[self view]].y;
+            CGFloat dist = [reco translationInView:[self view]].y;
+            CGFloat velNormed = vel / MAX(abs(dist), 0.1);
+            
+            [UIView animateWithDuration:[spec doubleForKey:@"SpringDuration"]
+                                  delay:0
+                 usingSpringWithDamping:[spec doubleForKey:@"SpringDamping"]
+                  initialSpringVelocity:velNormed
+                                options:UIViewAnimationOptionBeginFromCurrentState
+                             animations:^{
+                                 [[self yConstraint] setConstant:0];
+                                 [[self view] layoutIfNeeded];
+                             } completion:NULL];
+        }
+            break;
+        case UIGestureRecognizerStatePossible:
+        case UIGestureRecognizerStateFailed:
+            break;
+    }
+
+}
 
 @end
