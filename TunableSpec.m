@@ -143,7 +143,7 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
         [slider setMaximumValue:[[self sliderMaxValue] doubleValue]];
         [self withOwner:self maintain:^(id owner, id objValue) { [slider setValue:[objValue doubleValue]]; }];
         [slider addTarget:self action:@selector(takeSliderValue:) forControlEvents:UIControlEventValueChanged];
-        [slider addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[slider(>=300@750)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(slider)]];
+        [slider addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[slider(>=300@720)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(slider)]];
         [slider addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[slider(>=25@750)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(slider)]];
         [self setSlider:slider];
     }
