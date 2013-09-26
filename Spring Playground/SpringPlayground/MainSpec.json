@@ -3,7 +3,7 @@
     "sliderMaxValue" : 2,
     "key" : "SpringDuration",
     "label" : "Duration",
-    "sliderValue" : 0.5756579,
+    "sliderValue" : 0.5756578999999999,
     "sliderMinValue" : 0
   },
   {
@@ -11,6 +11,13 @@
     "key" : "SpringDamping",
     "label" : "Damping",
     "sliderValue" : 0.5115132,
+    "sliderMinValue" : 0
+  },
+  {
+    "sliderMaxValue" : 100,
+    "key" : "Depth",
+    "label" : "Depth",
+    "sliderValue" : 42.87975,
     "sliderMinValue" : 0
   },
   {

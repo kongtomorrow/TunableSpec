@@ -60,6 +60,22 @@
     TunableSpec *spec = [TunableSpec specNamed:@"MainSpec"];
     [[self view] addGestureRecognizer:[spec twoFingerTripleTapGestureRecognizer]];
 
+    
+    [[[self shapeView] layer] setShadowOpacity:1];
+    [[[self shapeView] layer] setShadowOffset:CGSizeMake(0,0)];
+    
+    UIInterpolatingMotionEffect *xMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"layer.shadowOffset.width" type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
+    UIInterpolatingMotionEffect *yMotionEffect = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"layer.shadowOffset.height" type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
+    [spec withDoubleForKey:@"Depth" owner:self maintain:^(id owner, double doubleValue) {
+        [xMotionEffect setMinimumRelativeValue:@(-doubleValue)];
+        [xMotionEffect setMaximumRelativeValue:@(doubleValue)];
+        [yMotionEffect setMinimumRelativeValue:@(-doubleValue)];
+        [yMotionEffect setMaximumRelativeValue:@(doubleValue)];
+    }];
+    [[self shapeView] addMotionEffect:xMotionEffect];
+    [[self shapeView] addMotionEffect:yMotionEffect];
+    
+    
     [spec withBoolForKey:@"ShowBackgroundColors" owner:self maintain:^(id owner, BOOL flag) {
         [[owner verticalMovementView] setBackgroundColor:flag ? [UIColor magentaColor] : nil];
     }];
