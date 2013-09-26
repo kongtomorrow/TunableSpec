@@ -3,19 +3,19 @@
     "sliderMaxValue" : 2,
     "key" : "SpringDuration",
     "label" : "Duration",
-    "sliderValue" : 0.4191617,
+    "sliderValue" : 0.5756579,
     "sliderMinValue" : 0
   },
   {
     "sliderMaxValue" : 1,
     "key" : "SpringDamping",
     "label" : "Damping",
-    "sliderValue" : 0.6407186,
+    "sliderValue" : 0.5115132,
     "sliderMinValue" : 0
   },
   {
-    "key" : "RightAlignLabel",
-    "label" : "Align Right",
+    "key" : "ShowBackgroundColors",
+    "label" : "Show Views",
     "switchValue" : false
   }
 ]

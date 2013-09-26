@@ -26,14 +26,14 @@
 		BE05A7E717C55B9C00F0B252 /* MainSpec.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = MainSpec.json; sourceTree = "<group>"; };
 		BE05A88F17C8002A00F0B252 /* TunableSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TunableSpec.m; path = ../../TunableSpec.m; sourceTree = "<group>"; };
 		BE05A89017C8002A00F0B252 /* TunableSpec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TunableSpec.h; path = ../../TunableSpec.h; sourceTree = "<group>"; };
-		BE1B52FA172F5A5400AA82FB /* TunerDriver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TunerDriver.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE1B52FA172F5A5400AA82FB /* Spring Playground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Spring Playground.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE1B52FD172F5A5400AA82FB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BE1B52FF172F5A5400AA82FB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		BE1B5301172F5A5400AA82FB /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		BE1B5305172F5A5400AA82FB /* TunerDriver-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TunerDriver-Info.plist"; sourceTree = "<group>"; };
+		BE1B5305172F5A5400AA82FB /* Spring Playground-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Spring Playground-Info.plist"; sourceTree = "<group>"; };
 		BE1B5307172F5A5400AA82FB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		BE1B5309172F5A5400AA82FB /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		BE1B530B172F5A5400AA82FB /* TunerDriver-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TunerDriver-Prefix.pch"; sourceTree = "<group>"; };
+		BE1B530B172F5A5400AA82FB /* Spring Playground-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Spring Playground-Prefix.pch"; sourceTree = "<group>"; };
 		BE1B530C172F5A5400AA82FB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		BE1B530D172F5A5400AA82FB /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		BE1B530F172F5A5400AA82FB /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
@@ -61,7 +61,7 @@
 		BE1B52F1172F5A5400AA82FB = {
 			isa = PBXGroup;
 			children = (
-				BE1B5303172F5A5400AA82FB /* TunerDriver */,
+				BE1B5303172F5A5400AA82FB /* SpringPlayground */,
 				BE1B52FC172F5A5400AA82FB /* Frameworks */,
 				BE1B52FB172F5A5400AA82FB /* Products */,
 			);
@@ -70,7 +70,7 @@
 		BE1B52FB172F5A5400AA82FB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BE1B52FA172F5A5400AA82FB /* TunerDriver.app */,
+				BE1B52FA172F5A5400AA82FB /* Spring Playground.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -85,7 +85,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		BE1B5303172F5A5400AA82FB /* TunerDriver */ = {
+		BE1B5303172F5A5400AA82FB /* SpringPlayground */ = {
 			isa = PBXGroup;
 			children = (
 				BE05A89017C8002A00F0B252 /* TunableSpec.h */,
@@ -97,16 +97,16 @@
 				BE1B5318172F5A5400AA82FB /* ViewController.xib */,
 				BE1B5304172F5A5400AA82FB /* Supporting Files */,
 			);
-			path = TunerDriver;
+			path = SpringPlayground;
 			sourceTree = "<group>";
 		};
 		BE1B5304172F5A5400AA82FB /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				BE1B5305172F5A5400AA82FB /* TunerDriver-Info.plist */,
+				BE1B5305172F5A5400AA82FB /* Spring Playground-Info.plist */,
 				BE1B5306172F5A5400AA82FB /* InfoPlist.strings */,
 				BE1B5309172F5A5400AA82FB /* main.m */,
-				BE1B530B172F5A5400AA82FB /* TunerDriver-Prefix.pch */,
+				BE1B530B172F5A5400AA82FB /* Spring Playground-Prefix.pch */,
 				BE1B530F172F5A5400AA82FB /* Default.png */,
 				BE1B5311172F5A5400AA82FB /* Default@2x.png */,
 				BE1B5313172F5A5400AA82FB /* Default-568h@2x.png */,
@@ -118,9 +118,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		BE1B52F9172F5A5400AA82FB /* TunerDriver */ = {
+		BE1B52F9172F5A5400AA82FB /* Spring Playground */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BE1B531D172F5A5400AA82FB /* Build configuration list for PBXNativeTarget "TunerDriver" */;
+			buildConfigurationList = BE1B531D172F5A5400AA82FB /* Build configuration list for PBXNativeTarget "Spring Playground" */;
 			buildPhases = (
 				BE1B52F6172F5A5400AA82FB /* Sources */,
 				BE1B52F7172F5A5400AA82FB /* Frameworks */,
@@ -130,9 +130,9 @@
 			);
 			dependencies = (
 			);
-			name = TunerDriver;
+			name = "Spring Playground";
 			productName = TunerDriver;
-			productReference = BE1B52FA172F5A5400AA82FB /* TunerDriver.app */;
+			productReference = BE1B52FA172F5A5400AA82FB /* Spring Playground.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -144,7 +144,7 @@
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Ken Ferry";
 			};
-			buildConfigurationList = BE1B52F5172F5A5400AA82FB /* Build configuration list for PBXProject "TunerDriver" */;
+			buildConfigurationList = BE1B52F5172F5A5400AA82FB /* Build configuration list for PBXProject "Spring Playground" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -156,7 +156,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BE1B52F9172F5A5400AA82FB /* TunerDriver */,
+				BE1B52F9172F5A5400AA82FB /* Spring Playground */,
 			);
 		};
 /* End PBXProject section */
@@ -273,9 +273,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "TunerDriver/TunerDriver-Prefix.pch";
-				INFOPLIST_FILE = "TunerDriver/TunerDriver-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				INFOPLIST_FILE = "$(SRCROOT)/SpringPlayground/Spring Playground-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "Spring Playground";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -285,9 +285,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "TunerDriver/TunerDriver-Prefix.pch";
-				INFOPLIST_FILE = "TunerDriver/TunerDriver-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				INFOPLIST_FILE = "$(SRCROOT)/SpringPlayground/Spring Playground-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "Spring Playground";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -296,7 +296,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		BE1B52F5172F5A5400AA82FB /* Build configuration list for PBXProject "TunerDriver" */ = {
+		BE1B52F5172F5A5400AA82FB /* Build configuration list for PBXProject "Spring Playground" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BE1B531B172F5A5400AA82FB /* Debug */,
@@ -305,7 +305,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BE1B531D172F5A5400AA82FB /* Build configuration list for PBXNativeTarget "TunerDriver" */ = {
+		BE1B531D172F5A5400AA82FB /* Build configuration list for PBXNativeTarget "Spring Playground" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BE1B531E172F5A5400AA82FB /* Debug */,
