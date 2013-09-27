@@ -319,7 +319,7 @@ static NSMutableDictionary *sSpecsByName;
 }
 
 
-- (UIView *)makeWindowContentView {
+- (UIViewController *)makeViewController {
     UIView *mainView = [[UIView alloc] init];
     [mainView setBackgroundColor:[[UIColor blackColor] colorWithAlphaComponent:0.6]];
     [[mainView layer] setBorderColor:[[UIColor whiteColor] CGColor]];
@@ -400,7 +400,9 @@ static NSMutableDictionary *sSpecsByName;
     [contentView addConstraint:[NSLayoutConstraint constraintWithItem:closeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
     [contentView addConstraint:[NSLayoutConstraint constraintWithItem:closeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
 
-    return contentView;
+    UIViewController *viewController = [[UIViewController alloc] init];
+    [viewController setView:contentView];
+    return viewController;
 }
 
 - (BOOL)controlsAreVisible {
@@ -413,14 +415,15 @@ CGPoint RectCenter(CGRect rect) {
 
 - (void)setControlsAreVisible:(BOOL)flag {
     if (flag && ![self window]) {        
-        UIView *contentView = [self makeWindowContentView];
+        UIViewController *viewController = [self makeViewController];
+        UIView *contentView = [viewController view];
         if ([self name]) {
             _savedDictionaryRepresentations = [[[NSUserDefaults standardUserDefaults] objectForKey:[self name]] mutableCopy];
         }
         _savedDictionaryRepresentations = _savedDictionaryRepresentations ?: [[NSMutableArray alloc] init];
         _currentSaveIndex = [_savedDictionaryRepresentations count];
         [self validateButtons];
-
+        
         CGSize size = [contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
         CGSize limitSize = [[[UIApplication sharedApplication] keyWindow] frame].size;
         size.width = MIN(size.width, limitSize.width);
@@ -431,6 +434,7 @@ CGPoint RectCenter(CGRect rect) {
         UIWindow *window = [[UIWindow alloc] init];
         [window setBounds:windowBounds];
         [window setCenter:RectCenter([[UIScreen mainScreen] applicationFrame])];
+        [window setRootViewController:viewController];
         
         [contentView setTranslatesAutoresizingMaskIntoConstraints:NO];
         [window addSubview:contentView];
