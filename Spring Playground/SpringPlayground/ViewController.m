@@ -83,11 +83,6 @@
     [[[self shapeView] layer] setCornerRadius:[[self shapeView] bounds].size.width/2];
 }
 
--(void)awakeFromNib {
-    [super awakeFromNib];
-}
-
-
 - (IBAction)handlePan:(UIPanGestureRecognizer *)reco {
     TunableSpec *spec = [TunableSpec specNamed:@"MainSpec"];
     switch ([reco state]) {
