@@ -1,5 +1,5 @@
 //
-//  TunableSpec.m
+//  KFTunableSpec.m
 //  TunableSpec
 //
 //  Created by Ken Ferry on 4/29/13.
@@ -7,12 +7,12 @@
 //  See LICENSE for details.
 //
 
-#import "TunableSpec.h"
+#import "KFTunableSpec.h"
 #import <QuartzCore/QuartzCore.h>
 
-UIImage *CloseImage();
+static UIImage *CloseImage();
 
-@interface _SpecItem : NSObject {
+@interface _KFSpecItem : NSObject {
     NSMapTable *_maintenanceBlocksByOwner;
     id _objectValue;
 }
@@ -29,7 +29,7 @@ UIImage *CloseImage();
 
 @end
 
-@implementation _SpecItem
+@implementation _KFSpecItem
 
 + (NSArray *)propertiesForJSONRepresentation {
     return @[@"key", @"label"];
@@ -111,13 +111,13 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 
 @end
 
-@interface _SilderSpecItem : _SpecItem
+@interface _KFSilderSpecItem : _KFSpecItem
 @property (nonatomic) NSNumber *sliderMinValue;
 @property (nonatomic) NSNumber *sliderMaxValue;
 @property UISlider *slider;
 @end
 
-@implementation _SilderSpecItem
+@implementation _KFSilderSpecItem
 
 + (NSArray *)propertiesForJSONRepresentation {
     static NSArray *sProps;
@@ -172,11 +172,11 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 
 @end
 
-@interface _SwitchSpecItem : _SpecItem
+@interface _KFSwitchSpecItem : _KFSpecItem
 @property UISwitch *uiSwitch;
 @end
 
-@implementation _SwitchSpecItem
+@implementation _KFSwitchSpecItem
 
 + (NSArray *)propertiesForJSONRepresentation {
     static NSArray *sProps;
@@ -219,8 +219,8 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 
 @end
 
-@interface TunableSpec () <UIDocumentInteractionControllerDelegate> {
-    NSMutableArray *_specItems;
+@interface KFTunableSpec () <UIDocumentInteractionControllerDelegate> {
+    NSMutableArray *_KFSpecItems;
     NSMutableArray *_savedDictionaryRepresentations;
     NSUInteger _currentSaveIndex;
 }
@@ -236,7 +236,7 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 @property UIDocumentInteractionController *interactionController; // interaction controller doesn't keep itself alive during presentation. lame.
 @end
 
-@implementation TunableSpec
+@implementation KFTunableSpec
 
 static NSMutableDictionary *sSpecsByName;
 +(void)initialize {
@@ -244,7 +244,7 @@ static NSMutableDictionary *sSpecsByName;
 }
 
 + (id)specNamed:(NSString *)name {
-    TunableSpec *spec = sSpecsByName[name];
+    KFTunableSpec *spec = sSpecsByName[name];
     if (!spec) {
         spec = [[self alloc] initWithName:name];
         sSpecsByName[name] = spec;
@@ -256,7 +256,7 @@ static NSMutableDictionary *sSpecsByName;
     self = [super init];
     if (self) {
         [self setName:name];
-        _specItems = [[NSMutableArray alloc] init];
+        _KFSpecItems = [[NSMutableArray alloc] init];
         _savedDictionaryRepresentations = [NSMutableArray array];
         
         NSParameterAssert(name != nil);
@@ -269,14 +269,14 @@ static NSMutableDictionary *sSpecsByName;
         NSAssert(specItemReps != nil, @"error decoding %@.json: %@", name, error);
 
         for (NSDictionary *rep in specItemReps) {
-            _SpecItem *specItem = nil;
-            specItem = specItem ?: [[_SilderSpecItem alloc] initWithJSONRepresentation:rep];
-            specItem = specItem ?: [[_SwitchSpecItem alloc] initWithJSONRepresentation:rep];
+            _KFSpecItem *specItem = nil;
+            specItem = specItem ?: [[_KFSilderSpecItem alloc] initWithJSONRepresentation:rep];
+            specItem = specItem ?: [[_KFSwitchSpecItem alloc] initWithJSONRepresentation:rep];
             
             if (specItem) {
-                [_specItems addObject:specItem];
+                [_KFSpecItems addObject:specItem];
             } else {
-                NSLog(@"%s: Couldn't read entry %@ in %@. Probably you're missing a key? Check TunableSpec.h.", __func__, rep, name);
+                NSLog(@"%s: Couldn't read entry %@ in %@. Probably you're missing a key? Check KFTunableSpec.h.", __func__, rep, name);
             }
         }
     }
@@ -288,8 +288,8 @@ static NSMutableDictionary *sSpecsByName;
     return [self initWithName:nil];
 }
 
-- (_SpecItem *)_specItemForKey:(NSString *)key {
-    for (_SpecItem *specItem in _specItems) {
+- (_KFSpecItem *)_KFSpecItemForKey:(NSString *)key {
+    for (_KFSpecItem *specItem in _KFSpecItems) {
         if ([[specItem key] isEqual:key]) {
             return specItem;
         }
@@ -299,21 +299,21 @@ static NSMutableDictionary *sSpecsByName;
 }
 
 - (double)doubleForKey:(NSString *)key {
-    return [[[self _specItemForKey:key] objectValue] doubleValue];
+    return [[[self _KFSpecItemForKey:key] objectValue] doubleValue];
 }
 
 - (void)withDoubleForKey:(NSString *)key owner:(id)weaklyHeldOwner maintain:(void (^)(id owner, double doubleValue))maintenanceBlock {
-    [[self _specItemForKey:key] withOwner:weaklyHeldOwner maintain:^(id owner, id objectValue){
+    [[self _KFSpecItemForKey:key] withOwner:weaklyHeldOwner maintain:^(id owner, id objectValue){
         maintenanceBlock(owner, [objectValue doubleValue]);
     }];
 }
 
 - (BOOL)boolForKey:(NSString *)key {
-    return [[[self _specItemForKey:key] objectValue] boolValue];
+    return [[[self _KFSpecItemForKey:key] objectValue] boolValue];
 }
 
 - (void)withBoolForKey:(NSString *)key owner:(id)weaklyHeldOwner maintain:(void (^)(id owner, BOOL flag))maintenanceBlock {
-    [[self _specItemForKey:key] withOwner:weaklyHeldOwner maintain:^(id owner, id objectValue){
+    [[self _KFSpecItemForKey:key] withOwner:weaklyHeldOwner maintain:^(id owner, id objectValue){
         maintenanceBlock(owner, [objectValue boolValue]);
     }];
 }
@@ -326,7 +326,7 @@ static NSMutableDictionary *sSpecsByName;
     [[mainView layer] setCornerRadius:5];
     
     UIView *lastControl = nil;
-    for (_SpecItem *def in _specItems) {
+    for (_KFSpecItem *def in _KFSpecItems) {
         UILabel *label = [[UILabel alloc] init];
         [label setTextColor:[UIColor whiteColor]];
         [label setBackgroundColor:[UIColor clearColor]];
@@ -472,14 +472,14 @@ CGPoint RectCenter(CGRect rect) {
 
 - (NSDictionary *)dictionaryRepresentation {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    for (_SpecItem *def in _specItems) {
+    for (_KFSpecItem *def in _KFSpecItems) {
         dict[[def key]] = [def objectValue];
     }
     return dict;
 }
 
 - (void)restoreFromDictionaryRepresentation:(NSDictionary *)dictionaryRep {
-    for (_SpecItem *def in _specItems) {
+    for (_KFSpecItem *def in _KFSpecItems) {
         id savedVal = [dictionaryRep objectForKey:[def key]];
         if (savedVal) [def setObjectValue:savedVal];
     }
@@ -487,7 +487,7 @@ CGPoint RectCenter(CGRect rect) {
 
 - (id)jsonRepresentation {
     NSMutableArray *json = [NSMutableArray array];
-    for (_SpecItem *def in _specItems) {
+    for (_KFSpecItem *def in _KFSpecItems) {
         [json addObject:[def jsonRepresentation]];
     }
     return json;
@@ -495,7 +495,7 @@ CGPoint RectCenter(CGRect rect) {
 
 - (NSString *)description {
     NSMutableString *desc = [NSMutableString stringWithFormat:@"<%@:%p \"%@\"", [self class], self, [self name]];
-    for (_SpecItem *item in _specItems) {
+    for (_KFSpecItem *item in _KFSpecItems) {
         [desc appendFormat:@" %@", [item description]];
     }
     [desc appendString:@">"];
@@ -532,7 +532,7 @@ CGPoint RectCenter(CGRect rect) {
 
 - (void)defaults {
     [self log];
-    for (_SpecItem *item in _specItems) {
+    for (_KFSpecItem *item in _KFSpecItems) {
         [item setObjectValue:[item defaultValue]];
     }
     [self validateButtons];

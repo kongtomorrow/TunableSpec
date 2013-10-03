@@ -1,5 +1,5 @@
 //
-//  TunableSpec.h
+//  KFTunableSpec.h
 //  TunableSpec
 //
 //  Created by Ken Ferry on 4/29/13.
@@ -7,9 +7,9 @@
 //  See LICENSE for details.
 //
 
-/* TunableSpec provides live tweaking of UI spec values in a running app. From the source code perspective, it's similar to NSUserDefaults, but the values are backed by a JSON file. It's able to display UI for tuning the values, and a share button exports a new JSON file to be checked back into source control.
+/* KFTunableSpec provides live tweaking of UI spec values in a running app. From the source code perspective, it's similar to NSUserDefaults, but the values are backed by a JSON file. It's able to display UI for tuning the values, and a share button exports a new JSON file to be checked back into source control.
  
- To use [TunableSpec specNamed:@"MainSpec"], the resources directory must contain a file MainSpec.json. That file has values and the information required to lay out a UI for tuning the values.
+ To use [KFTunableSpec specNamed:@"MainSpec"], the resources directory must contain a file MainSpec.json. That file has values and the information required to lay out a UI for tuning the values.
  
  A value can tuned with a slider or a switch.
  
@@ -64,7 +64,7 @@ Sample JSON:
 #import <UIKit/UIKit.h>
 
 
-@interface TunableSpec : NSObject
+@interface KFTunableSpec : NSObject
 
 + (id)specNamed:(NSString *)name;
 

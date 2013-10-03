@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BE05A7E817C55B9C00F0B252 /* MainSpec.json in Resources */ = {isa = PBXBuildFile; fileRef = BE05A7E717C55B9C00F0B252 /* MainSpec.json */; };
-		BE05A89117C8002A00F0B252 /* TunableSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE05A88F17C8002A00F0B252 /* TunableSpec.m */; };
+		BE05A89117C8002A00F0B252 /* KFTunableSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = BE05A88F17C8002A00F0B252 /* KFTunableSpec.m */; };
 		BE1B52FE172F5A5400AA82FB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1B52FD172F5A5400AA82FB /* UIKit.framework */; };
 		BE1B5300172F5A5400AA82FB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1B52FF172F5A5400AA82FB /* Foundation.framework */; };
 		BE1B5302172F5A5400AA82FB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1B5301172F5A5400AA82FB /* CoreGraphics.framework */; };
@@ -24,8 +24,8 @@
 
 /* Begin PBXFileReference section */
 		BE05A7E717C55B9C00F0B252 /* MainSpec.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = MainSpec.json; sourceTree = "<group>"; };
-		BE05A88F17C8002A00F0B252 /* TunableSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TunableSpec.m; path = ../../TunableSpec.m; sourceTree = "<group>"; };
-		BE05A89017C8002A00F0B252 /* TunableSpec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TunableSpec.h; path = ../../TunableSpec.h; sourceTree = "<group>"; };
+		BE05A88F17C8002A00F0B252 /* KFTunableSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KFTunableSpec.m; path = ../../KFTunableSpec.m; sourceTree = "<group>"; };
+		BE05A89017C8002A00F0B252 /* KFTunableSpec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KFTunableSpec.h; path = ../../KFTunableSpec.h; sourceTree = "<group>"; };
 		BE1B52FA172F5A5400AA82FB /* Spring Playground.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Spring Playground.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE1B52FD172F5A5400AA82FB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		BE1B52FF172F5A5400AA82FB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -88,8 +88,8 @@
 		BE1B5303172F5A5400AA82FB /* SpringPlayground */ = {
 			isa = PBXGroup;
 			children = (
-				BE05A89017C8002A00F0B252 /* TunableSpec.h */,
-				BE05A88F17C8002A00F0B252 /* TunableSpec.m */,
+				BE05A89017C8002A00F0B252 /* KFTunableSpec.h */,
+				BE05A88F17C8002A00F0B252 /* KFTunableSpec.m */,
 				BE1B530C172F5A5400AA82FB /* AppDelegate.h */,
 				BE1B530D172F5A5400AA82FB /* AppDelegate.m */,
 				BE1B5315172F5A5400AA82FB /* ViewController.h */,
@@ -182,7 +182,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE05A89117C8002A00F0B252 /* TunableSpec.m in Sources */,
+				BE05A89117C8002A00F0B252 /* KFTunableSpec.m in Sources */,
 				BE1B530A172F5A5400AA82FB /* main.m in Sources */,
 				BE1B530E172F5A5400AA82FB /* AppDelegate.m in Sources */,
 				BE1B5317172F5A5400AA82FB /* ViewController.m in Sources */,

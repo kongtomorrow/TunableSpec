@@ -8,7 +8,7 @@
 //
 
 #import "ViewController.h"
-#import "TunableSpec.h"
+#import "KFTunableSpec.h"
 
 @interface ViewController ()
 
@@ -57,7 +57,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    TunableSpec *spec = [TunableSpec specNamed:@"MainSpec"];
+    KFTunableSpec *spec = [KFTunableSpec specNamed:@"MainSpec"];
     [[self view] addGestureRecognizer:[spec twoFingerTripleTapGestureRecognizer]];
 
     
@@ -84,7 +84,7 @@
 }
 
 - (IBAction)handlePan:(UIPanGestureRecognizer *)reco {
-    TunableSpec *spec = [TunableSpec specNamed:@"MainSpec"];
+    KFTunableSpec *spec = [KFTunableSpec specNamed:@"MainSpec"];
     switch ([reco state]) {
         case UIGestureRecognizerStateBegan:
         case UIGestureRecognizerStateChanged: {
