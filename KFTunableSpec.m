@@ -11,6 +11,8 @@
 #import <QuartzCore/QuartzCore.h>
 
 static UIImage *CloseImage();
+static UIImage *CalloutBezelImage();
+static UIImage *CalloutArrowImage();
 
 @interface _KFSpecItem : NSObject {
     NSMapTable *_maintenanceBlocksByOwner;
@@ -111,10 +113,49 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 
 @end
 
+@interface _KFCalloutView : UIView
+@property (readonly) UILabel *label;
+@end
+
+@implementation _KFCalloutView
+- (id)init {
+    self = [super init];
+    if (self) {
+        UIImageView *bezelView = [[UIImageView alloc] init];
+        UIImageView *arrowView = [[UIImageView alloc] init];
+        UILabel *label = [[UILabel alloc] init];
+        [label setTextColor:[UIColor whiteColor]];
+        [label setTextAlignment:NSTextAlignmentCenter];
+        NSDictionary *views = NSDictionaryOfVariableBindings(bezelView, arrowView, label);
+        [views enumerateKeysAndObjectsUsingBlock:^(id key, UIView *view, BOOL *stop) {
+            [view setTranslatesAutoresizingMaskIntoConstraints:NO];
+        }];
+        
+        [bezelView addSubview:label];
+        [bezelView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-16-[label]-16-|" options:0 metrics:nil views:views]];
+        [bezelView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-7-[label]-7-|" options:0 metrics:nil views:views]];
+
+        [self addSubview:bezelView];
+        [self addSubview:arrowView];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[bezelView]|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=5)-[arrowView]-(>=5)-|" options:0 metrics:nil views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[bezelView]-(-1)-[arrowView]|" options:NSLayoutFormatAlignAllCenterX metrics:nil views:views]];
+        
+        [bezelView setImage:CalloutBezelImage()];
+        [arrowView setImage:CalloutArrowImage()];
+        _label = label;
+    }
+    return self;
+}
+@end
+
 @interface _KFSilderSpecItem : _KFSpecItem
 @property (nonatomic) NSNumber *sliderMinValue;
 @property (nonatomic) NSNumber *sliderMaxValue;
+@property UIView *container;
 @property UISlider *slider;
+@property _KFCalloutView *calloutView;
+@property NSLayoutConstraint *calloutXCenter;
 @end
 
 @implementation _KFSilderSpecItem
@@ -137,17 +178,41 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 }
 
 - (UIView *)tuningView {
-    if (![self slider]) {
+    if (![self container]) {
+        UIView *container = [[UIView alloc] init];
         UISlider *slider = [[UISlider alloc] init];
+        _KFCalloutView *callout = [[_KFCalloutView alloc] init];
+        NSDictionary *views = NSDictionaryOfVariableBindings(slider, callout);
+
+        [self setSlider:slider];
+        [slider setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [container addSubview:slider];
+        [container addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[slider]-0-|" options:0 metrics:nil views:views]];
+        [container addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[slider]-0-|" options:0 metrics:nil views:views]];
+        [slider addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[slider(>=300@720)]" options:0 metrics:nil views:views]];
+        [slider addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[slider(>=25@750)]" options:0 metrics:nil views:views]];
+
         [slider setMinimumValue:[[self sliderMinValue] doubleValue]];
         [slider setMaximumValue:[[self sliderMaxValue] doubleValue]];
         [self withOwner:self maintain:^(id owner, id objValue) { [slider setValue:[objValue doubleValue]]; }];
         [slider addTarget:self action:@selector(takeSliderValue:) forControlEvents:UIControlEventValueChanged];
-        [slider addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[slider(>=300@720)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(slider)]];
-        [slider addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[slider(>=25@750)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(slider)]];
-        [self setSlider:slider];
+
+        [callout setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [container addSubview:callout];
+        [container addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[callout]-3-[slider]" options:0 metrics:nil views:views]];
+        [self setCalloutXCenter:[NSLayoutConstraint constraintWithItem:callout attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:container attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
+        [container addConstraint:[self calloutXCenter]];
+        [callout setAlpha:0];
+
+        [self withOwner:self maintain:^(id owner, id objValue) { [[callout label] setText:[NSString stringWithFormat:@"%.2f", [objValue doubleValue]]]; }];
+        [slider addTarget:self action:@selector(showCallout:) forControlEvents:UIControlEventTouchDown];
+        [slider addTarget:self action:@selector(updateCalloutXCenter:) forControlEvents:UIControlEventValueChanged];
+        [slider addTarget:self action:@selector(hideCallout:) forControlEvents:UIControlEventTouchUpInside|UIControlEventTouchUpOutside|UIControlEventTouchCancel];
+        
+        [self setCalloutView:callout];
+        [self setContainer:container];
     }
-    return [self slider];
+    return [self container];
 }
 
 - (void)takeSliderValue:(UISlider *)slider {
@@ -168,6 +233,26 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 
 - (NSNumber *)sliderMaxValue {
     return _sliderMaxValue ?: @([[self defaultValue] doubleValue]*2);
+}
+
+- (void)showCallout:(id)sender {
+    [UIView animateWithDuration:0.15 animations:^{
+        [[self calloutView] setAlpha:1.0];
+    }];
+}
+
+- (void)hideCallout:(id)sender {
+    [UIView animateWithDuration:0.15 animations:^{
+        [[self calloutView] setAlpha:0.0];
+    }];
+}
+
+- (void)updateCalloutXCenter:(id)sender {
+    UISlider *slider = [self slider];
+    CGRect bounds = [slider bounds];
+    CGRect thumbRectSliderSpace = [slider thumbRectForBounds:bounds trackRect:[slider trackRectForBounds:bounds] value:[slider value]];
+    CGRect thumbRect = [[self container] convertRect:thumbRectSliderSpace fromView:slider];
+    [[self calloutXCenter] setConstant:thumbRect.origin.x + thumbRect.size.width/2];
 }
 
 @end
@@ -584,14 +669,53 @@ CGPoint RectCenter(CGRect rect) {
 
 
 @end
-     
+
+static UIColor *CalloutColor() {
+    return [UIColor colorWithWhite:0.219f alpha:1.0];
+}
+
+static UIImage *CalloutBezelImage() {
+    static UIImage *bezelImage;
+    if (!bezelImage) {
+        CGFloat bezelRadius = 5.5;
+        CGFloat ceilBezelRadius = ceil(bezelRadius);
+        CGRect bounds = CGRectMake(0, 0, ceilBezelRadius*2+1, ceilBezelRadius*2+1);
+        UIGraphicsBeginImageContextWithOptions(bounds.size, NO, [[UIScreen mainScreen] scale]);
+        [CalloutColor() setFill];
+        [[UIBezierPath bezierPathWithRoundedRect:bounds cornerRadius:bezelRadius] fill];
+        UIImage *roundRectImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        bezelImage = [roundRectImage resizableImageWithCapInsets:UIEdgeInsetsMake(ceilBezelRadius, ceilBezelRadius, ceilBezelRadius, ceilBezelRadius)];
+    }
+    return bezelImage;
+}
+
+static UIImage *CalloutArrowImage() {
+    static UIImage *arrowImage;
+    if (!arrowImage) {
+        CGFloat arrowHeight = 10;
+        CGRect bounds = CGRectMake(0, 0, (arrowHeight+1)*2, arrowHeight+1);
+        UIGraphicsBeginImageContextWithOptions(bounds.size, NO, [[UIScreen mainScreen] scale]);
+        [CalloutColor() setFill];
+        UIBezierPath *bezierPath = [[UIBezierPath alloc] init];
+        [bezierPath moveToPoint:CGPointMake(0,0)];
+        [bezierPath addLineToPoint:CGPointMake(bounds.size.width/2, bounds.size.height)];
+        [bezierPath addLineToPoint:CGPointMake(bounds.size.width, 0)];
+        [bezierPath setLineJoinStyle:kCGLineJoinRound];
+        [bezierPath fill];
+        arrowImage = UIGraphicsGetImageFromCurrentImageContext();
+    }
+    return arrowImage;
+}
+
+
 // drawing code generated by http://likethought.com/opacity/
 // (I just didn't want to require including image files)
 
 const CGFloat kDrawCloseArtworkWidth = 30.0f;
 const CGFloat kDrawCloseArtworkHeight = 30.0f;
 
-void DrawCloseArtwork(CGContextRef context, CGRect bounds)
+static void DrawCloseArtwork(CGContextRef context, CGRect bounds)
 {
     CGRect imageBounds = CGRectMake(0.0f, 0.0f, kDrawCloseArtworkWidth, kDrawCloseArtworkHeight);
     CGFloat alignStroke;
@@ -723,7 +847,7 @@ void DrawCloseArtwork(CGContextRef context, CGRect bounds)
     CGColorSpaceRelease(space);
 }
 
-UIImage *CloseImage() {
+static UIImage *CloseImage() {
     CGRect bounds = CGRectMake(0, 0, kDrawCloseArtworkWidth, kDrawCloseArtworkHeight);
     UIGraphicsBeginImageContextWithOptions(bounds.size, NO, [[UIScreen mainScreen] scale]);
     DrawCloseArtwork(UIGraphicsGetCurrentContext(), bounds);
