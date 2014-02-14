@@ -8,11 +8,26 @@
 //
 
 #import "KFTunableSpec.h"
-#import <QuartzCore/QuartzCore.h>
 
+@class _KFCalloutView;
+
+#import "TargetConditionals.h"
+
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#else
+#import <Cocoa/Cocoa.h>
+#endif
+
+#import <QuartzCore/QuartzCore.h>
+#include <stdlib.h>
+#include <xlocale.h>
+
+#if TARGET_OS_IPHONE
 static UIImage *CloseImage();
 static UIImage *CalloutBezelImage();
 static UIImage *CalloutArrowImage();
+#endif
 
 @interface _KFSpecItem : NSObject {
     NSMapTable *_maintenanceBlocksByOwner;
@@ -27,7 +42,7 @@ static UIImage *CalloutArrowImage();
 - (void)withOwner:(id)weaklyHeldOwner maintain:(void (^)(id owner, id objValue))maintenanceBlock;
 
 // override this
-- (UIView *)tuningView;
+- (id)tuningView;
 
 @end
 
@@ -93,7 +108,7 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
     return _label ?: CamelCaseToSpaces([self key]);
 }
 
-- (UIView *)tuningView {
+- (id)tuningView {
     NSAssert(0, @"%@ must implement %@ and not call super", [self class], NSStringFromSelector(_cmd));
     return nil;
 }
@@ -112,6 +127,58 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 }
 
 @end
+
+@interface _KFSilderSpecItem : _KFSpecItem
+@property (nonatomic) NSNumber *sliderMinValue;
+@property (nonatomic) NSNumber *sliderMaxValue;
+#if TARGET_OS_IPHONE
+@property UIView *container;
+@property UISlider *slider;
+@property _KFCalloutView *calloutView;
+@property NSLayoutConstraint *calloutXCenter;
+#else
+@property NSSlider *slider;
+#endif
+@end
+
+@implementation _KFSilderSpecItem
+
++ (NSArray *)propertiesForJSONRepresentation {
+    static NSArray *sProps;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sProps = [[super propertiesForJSONRepresentation] arrayByAddingObjectsFromArray:@[@"sliderValue", @"sliderMinValue", @"sliderMaxValue"]];
+    });
+    return sProps;
+}
+
+- (id)initWithJSONRepresentation:(NSDictionary *)json {
+    if (json[@"sliderValue"] == nil) {
+        return nil;
+    } else {
+        return [super initWithJSONRepresentation:json];
+    }
+}
+
+- (id)sliderValue {
+    return [self objectValue];
+}
+
+- (void)setSliderValue:(id)sliderValue {
+    [self setObjectValue:sliderValue];
+}
+
+- (NSNumber *)sliderMinValue {
+    return _sliderMinValue ?: @0;
+}
+
+- (NSNumber *)sliderMaxValue {
+    return _sliderMaxValue ?: @([[self defaultValue] doubleValue]*2);
+}
+
+@end
+
+#if TARGET_OS_IPHONE
 
 @interface _KFCalloutView : UIView
 @property (readonly) UILabel *label;
@@ -149,33 +216,7 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 }
 @end
 
-@interface _KFSilderSpecItem : _KFSpecItem
-@property (nonatomic) NSNumber *sliderMinValue;
-@property (nonatomic) NSNumber *sliderMaxValue;
-@property UIView *container;
-@property UISlider *slider;
-@property _KFCalloutView *calloutView;
-@property NSLayoutConstraint *calloutXCenter;
-@end
-
-@implementation _KFSilderSpecItem
-
-+ (NSArray *)propertiesForJSONRepresentation {
-    static NSArray *sProps;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sProps = [[super propertiesForJSONRepresentation] arrayByAddingObjectsFromArray:@[@"sliderValue", @"sliderMinValue", @"sliderMaxValue"]];
-    });
-    return sProps;
-}
-
-- (id)initWithJSONRepresentation:(NSDictionary *)json {
-    if (json[@"sliderValue"] == nil) {
-        return nil;
-    } else {
-        return [super initWithJSONRepresentation:json];
-    }
-}
+@implementation _KFSilderSpecItem (KFUI)
 
 - (UIView *)tuningView {
     if (![self container]) {
@@ -183,7 +224,7 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
         UISlider *slider = [[UISlider alloc] init];
         _KFCalloutView *callout = [[_KFCalloutView alloc] init];
         NSDictionary *views = NSDictionaryOfVariableBindings(slider, callout);
-
+        
         [self setSlider:slider];
         [slider setTranslatesAutoresizingMaskIntoConstraints:NO];
         [container addSubview:slider];
@@ -191,19 +232,19 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
         [container addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[slider]-0-|" options:0 metrics:nil views:views]];
         [slider addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[slider(>=300@720)]" options:0 metrics:nil views:views]];
         [slider addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[slider(>=25@750)]" options:0 metrics:nil views:views]];
-
+        
         [slider setMinimumValue:[[self sliderMinValue] doubleValue]];
         [slider setMaximumValue:[[self sliderMaxValue] doubleValue]];
         [self withOwner:self maintain:^(id owner, id objValue) { [slider setValue:[objValue doubleValue]]; }];
         [slider addTarget:self action:@selector(takeSliderValue:) forControlEvents:UIControlEventValueChanged];
-
+        
         [callout setTranslatesAutoresizingMaskIntoConstraints:NO];
         [container addSubview:callout];
         [container addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[callout]-3-[slider]" options:0 metrics:nil views:views]];
         [self setCalloutXCenter:[NSLayoutConstraint constraintWithItem:callout attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:container attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
         [container addConstraint:[self calloutXCenter]];
         [callout setAlpha:0];
-
+        
         [self withOwner:self maintain:^(id owner, id objValue) { [[callout label] setText:[NSString stringWithFormat:@"%.2f", [objValue doubleValue]]]; }];
         [slider addTarget:self action:@selector(showCallout:) forControlEvents:UIControlEventTouchDown];
         [slider addTarget:self action:@selector(updateCalloutXCenter:) forControlEvents:UIControlEventValueChanged];
@@ -217,22 +258,6 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 
 - (void)takeSliderValue:(UISlider *)slider {
     [self setSliderValue:@([slider value])];
-}
-
-- (id)sliderValue {
-    return [self objectValue];
-}
-
-- (void)setSliderValue:(id)sliderValue {
-    [self setObjectValue:sliderValue];
-}
-
-- (NSNumber *)sliderMinValue {
-    return _sliderMinValue ?: @0;
-}
-
-- (NSNumber *)sliderMaxValue {
-    return _sliderMaxValue ?: @([[self defaultValue] doubleValue]*2);
 }
 
 - (void)showCallout:(id)sender {
@@ -256,9 +281,42 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 }
 
 @end
+#else // OS X
+
+@implementation _KFSilderSpecItem (KFUI)
+
+- (NSView *)tuningView {
+    if (![self slider]) {
+        NSSlider *slider = [[NSSlider alloc] init];
+        [slider setIdentifier:[[self key] stringByAppendingString:@"Slider"]];
+        [self setSlider:slider];
+        id views = NSDictionaryOfVariableBindings(slider);
+        [slider addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[slider(>=300@720)]" options:0 metrics:nil views:views]];
+        
+        [slider setMinValue:[[self sliderMinValue] doubleValue]];
+        [slider setMaxValue:[[self sliderMaxValue] doubleValue]];
+        [self withOwner:self maintain:^(id owner, id objValue) { [slider setDoubleValue:[objValue doubleValue]]; }];
+        [slider setTarget:self];
+        [slider setAction:@selector(takeSliderValue:)];
+    }
+    return [self slider];
+}
+
+- (void)takeSliderValue:(NSSlider *)slider {
+    [self setSliderValue:@([slider doubleValue])];
+}
+@end
+
+#endif
+
+
 
 @interface _KFSwitchSpecItem : _KFSpecItem
+#if TARGET_OS_IPHONE
 @property UISwitch *uiSwitch;
+#else
+@property NSButton *checkboxButton;
+#endif
 @end
 
 @implementation _KFSwitchSpecItem
@@ -279,7 +337,7 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
         return [super initWithJSONRepresentation:json];
     }
 }
-
+#if TARGET_OS_IPHONE
 - (UIView *)tuningView {
     if (![self uiSwitch]) {
         UISwitch *uiSwitch = [[UISwitch alloc] init];
@@ -293,6 +351,23 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 - (void)takeSwitchValue:(UISwitch *)uiSwitch {
     [self setSwitchValue:@([uiSwitch isOn])];
 }
+#else
+- (NSView *)tuningView {
+    if (![self checkboxButton]) {
+        NSButton *checkboxButton = [[NSButton alloc] init];
+        [checkboxButton setButtonType:NSSwitchButton];
+        [checkboxButton setTarget:self];
+        [checkboxButton setAction:@selector(takeSwitchValue:)];
+        [self withOwner:self maintain:^(id owner, id objValue) { [checkboxButton setState:[objValue boolValue]]; }];
+        [self setCheckboxButton:checkboxButton];
+    }
+    return [self checkboxButton];
+}
+
+- (void)takeSwitchValue:(NSButton *)checkboxButton {
+    [self setSwitchValue:@([checkboxButton state])];
+}
+#endif
 
 - (id)switchValue {
     return [self objectValue];
@@ -304,13 +379,102 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 
 @end
 
-@interface KFTunableSpec () <UIDocumentInteractionControllerDelegate> {
+#if !TARGET_OS_IPHONE
+@interface _KFColorSpecItem : _KFSpecItem
+@property NSColorWell *colorWell;
+@end
+
+@implementation _KFColorSpecItem
+
++ (NSArray *)propertiesForJSONRepresentation {
+    static NSArray *sProps;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sProps = [[super propertiesForJSONRepresentation] arrayByAddingObjectsFromArray:@[@"sRGBAColor"]];
+    });
+    return sProps;
+}
+
+- (id)initWithJSONRepresentation:(NSDictionary *)json {
+    if (json[@"sRGBAColor"] == nil) {
+        return nil;
+    } else {
+        return [super initWithJSONRepresentation:json];
+    }
+}
+
+- (void)setSRGBAColor:(NSString *)rgbaColorString {
+    static NSRegularExpression *parsingRegex;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSError *error;
+        parsingRegex = [[NSRegularExpression alloc] initWithPattern:@"^rgba\\("
+                        @"\\s*([0-9]{1,3})\\s*,"
+                        @"\\s*([0-9]{1,3})\\s*,"
+                        @"\\s*([0-9]{1,3})\\s*,"
+                        @"\\s*((?:1(?:\\.0+)?)|(?:0\\.[0-9]*))\\s*"
+                        @"\\)$" options:0 error:&error];
+        NSAssert(parsingRegex, @"%@", [error localizedDescription]);
+    });
+    
+    [[NSScanner alloc] init];
+    NSTextCheckingResult *res = [parsingRegex firstMatchInString:rgbaColorString options:0 range:NSMakeRange(0, [rgbaColorString length])];
+    if (!res) goto bail;
+    CGFloat components[4];
+    for (int i = 0; i < 3; i++) {
+        components[i] = [[rgbaColorString substringWithRange:[res rangeAtIndex:i+1]] integerValue] / 255.0;
+        if (components[i] > 1.0) goto bail;
+    }
+    components[3] = strtod_l([[rgbaColorString substringWithRange:[res rangeAtIndex:4]] UTF8String], NULL, NULL);
+
+    [self setObjectValue:[NSColor colorWithColorSpace:[NSColorSpace sRGBColorSpace] components:components count:4]];
+    return;
+    
+    bail:
+     NSAssert(0, @"String %@ did not parse. Example: \"rgba(0,0,255,0.3)\".", rgbaColorString);
+
+}
+
+- (NSString *)sRGBAColor {
+    NSColor *sRGBColor = [[self objectValue] colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
+    CGFloat components[4];
+    [sRGBColor getComponents:components];
+    return [NSString stringWithFormat:@"rgba(%g,%g,%g,%g)", round(components[0]*255), round(components[1]*255), round(components[2]*255), components[3]];
+}
+
+- (NSView *)tuningView {
+    if (![self colorWell]) {
+        NSColorWell *colorWell = [[NSColorWell alloc] init];
+        id views = NSDictionaryOfVariableBindings(colorWell);
+        [colorWell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[colorWell(20)]" options:0 metrics:nil views:views]];
+        [colorWell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[colorWell(>=300@720)]" options:0 metrics:nil views:views]];
+        [colorWell setTarget:self];
+        [colorWell setAction:@selector(takeColorValue:)];
+        [self withOwner:self maintain:^(id owner, id objValue) { [colorWell setColor:objValue]; }];
+        [self setColorWell:colorWell];
+    }
+    return [self colorWell];
+}
+
+- (void)takeColorValue:(NSColorWell *)colorWell {
+    [self setObjectValue:[colorWell color]];
+}
+
+@end
+#endif
+
+@interface KFTunableSpec () {
     NSMutableArray *_KFSpecItems;
     NSMutableArray *_savedDictionaryRepresentations;
     NSUInteger _currentSaveIndex;
 }
-@property UIWindow *window;
 @property NSString *name;
+
+@end
+
+#if TARGET_OS_IPHONE
+@interface KFTunableSpec () <UIDocumentInteractionControllerDelegate>
+@property UIWindow *window;
 @property UIButton *previousButton;
 @property UIButton *saveButton;
 @property UIButton *defaultsButton;
@@ -320,6 +484,13 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 
 @property UIDocumentInteractionController *interactionController; // interaction controller doesn't keep itself alive during presentation. lame.
 @end
+#else
+@interface KFTunableSpec () <NSWindowDelegate>
+@property NSWindow *window;
+@property NSButton *revertButton;
+@property NSButton *saveButton;
+@end
+#endif
 
 @implementation KFTunableSpec
 
@@ -357,6 +528,7 @@ static NSMutableDictionary *sSpecsByName;
             _KFSpecItem *specItem = nil;
             specItem = specItem ?: [[_KFSilderSpecItem alloc] initWithJSONRepresentation:rep];
             specItem = specItem ?: [[_KFSwitchSpecItem alloc] initWithJSONRepresentation:rep];
+//            specItem = specItem ?: [[_KFColorSpecItem alloc] initWithJSONRepresentation:rep];
             
             if (specItem) {
                 [_KFSpecItems addObject:specItem];
@@ -403,7 +575,17 @@ static NSMutableDictionary *sSpecsByName;
     }];
 }
 
+#if !TARGET_OS_IPHONE
+- (NSColor *)colorForKey:(NSString *)key {
+    return [[self _KFSpecItemForKey:key] objectValue];
+}
+- (void)withColorForKey:(NSString *)key owner:(id)weaklyHeldOwner maintain:(void (^)(id owner, NSColor *colorValue))maintenanceBlock {
+    [[self _KFSpecItemForKey:key] withOwner:weaklyHeldOwner maintain:maintenanceBlock];
+}
+#endif
 
+
+#if TARGET_OS_IPHONE
 - (UIViewController *)makeViewController {
     UIView *mainView = [[UIView alloc] init];
     [mainView setBackgroundColor:[[UIColor blackColor] colorWithAlphaComponent:0.6]];
@@ -554,6 +736,127 @@ CGPoint RectCenter(CGRect rect) {
 - (void)_toggleVisible:(id)sender {
     [self setControlsAreVisible:![self controlsAreVisible]];
 }
+#else
+- (NSViewController *)makeViewController {
+    NSView *mainView = [[NSView alloc] init];
+    
+    NSView *lastControl = nil;
+    for (_KFSpecItem *def in _KFSpecItems) {
+        NSTextField *label = [[NSTextField alloc] init];
+        [label setBordered:NO];
+        [label setBezeled:NO];
+        [label setEditable:NO];
+        [label setDrawsBackground:NO];
+        [[label cell] setBackgroundStyle:NSBackgroundStyleDark];
+        
+        NSView *control = [def tuningView];
+        [label setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [label setStringValue:[[def label] stringByAppendingString:@":"]];
+        [label setAlignment:NSRightTextAlignment];
+        
+        id views = lastControl ? NSDictionaryOfVariableBindings(label, control, lastControl) : NSDictionaryOfVariableBindings(label, control);
+        [views enumerateKeysAndObjectsUsingBlock:^(id key, id view, BOOL *stop) {
+            [view setTranslatesAutoresizingMaskIntoConstraints:NO];
+            [mainView addSubview:view];
+        }];
+        [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[label]-[control]-(==20@700,>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
+        
+        if (lastControl) {
+            [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[lastControl]-[control]" options:0 metrics:nil views:views]];
+            [mainView addConstraint:[NSLayoutConstraint constraintWithItem:lastControl attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:control attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+        } else {
+            [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[control]" options:0 metrics:nil views:views]];
+        }
+        lastControl = control;
+    }
+    
+    NSView *buttonCarrier = [[NSView alloc] init];
+    [buttonCarrier setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [mainView addSubview:buttonCarrier];
+    NSMutableDictionary *views = [NSDictionaryOfVariableBindings(buttonCarrier) mutableCopy];
+    for (NSString *op in @[@"revert", @"save"]) {
+        NSButton *button = [[NSButton alloc] init];
+        [button setBezelStyle:NSRoundedBezelStyle];
+        [button setTitle:[op capitalizedString]];
+        [button setTarget:self];
+        [button setAction:NSSelectorFromString([op stringByAppendingString:@":"])];
+        [button setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [views setObject:button forKey:op];
+        [self setValue:button forKey:[op stringByAppendingString:@"Button"]];
+        [buttonCarrier addSubview:button];
+    }
+    
+    [buttonCarrier addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[revert]-[save]-0-|" options:NSLayoutFormatAlignAllTop metrics:nil views:views]];
+    [buttonCarrier addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[save]-0-|" options:NSLayoutFormatAlignAllTop metrics:nil views:views]];
+    
+    [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(>=20)-[buttonCarrier]-(>=20)-|" options:NSLayoutFormatAlignAllTop metrics:nil views:views]];
+    [mainView addConstraint:[NSLayoutConstraint constraintWithItem:views[@"revert"] attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:mainView attribute:NSLayoutAttributeCenterX multiplier:1 constant:-10]];
+
+    [mainView addConstraint:[NSLayoutConstraint constraintWithItem:buttonCarrier attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:mainView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+
+    if (lastControl) {
+        [views setObject:lastControl forKey:@"lastControl"];
+        [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[lastControl]-[buttonCarrier]-|" options:0 metrics:nil views:views]];
+    } else {
+        [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[buttonCarrier]-|" options:0 metrics:nil views:views]];
+    }
+    
+    
+    NSViewController *viewController = [[NSViewController alloc] init];
+    [viewController setView:mainView];
+    return viewController;
+}
+
+- (BOOL)controlsAreVisible {
+    return [self window] != nil;
+}
+
+CGPoint RectCenter(CGRect rect) {
+    return CGPointMake(rect.origin.x + rect.size.width/2, rect.origin.y + rect.size.height/2);
+}
+
+- (void)setControlsAreVisible:(BOOL)flag {
+    if (flag && ![self window]) {        
+        NSViewController *viewController = [self makeViewController];
+        NSView *contentView = [viewController view];
+        if ([self name]) {
+            _savedDictionaryRepresentations = [[[NSUserDefaults standardUserDefaults] objectForKey:[self name]] mutableCopy];
+        }
+        _savedDictionaryRepresentations = _savedDictionaryRepresentations ?: [[NSMutableArray alloc] init];
+        _currentSaveIndex = [_savedDictionaryRepresentations count];
+        
+        NSPanel *window = [[NSPanel alloc] initWithContentRect:NSZeroRect styleMask:NSHUDWindowMask|NSTitledWindowMask|NSResizableWindowMask|NSUtilityWindowMask|NSClosableWindowMask backing:NSBackingStoreBuffered defer:NO];
+        [window setTitle:[self name]];
+        [window setContentView:contentView];
+        [window setDelegate:self];
+        [window layoutIfNeeded];
+        
+        [window makeKeyAndOrderFront:nil];
+        [self setWindow:window];
+        
+    }
+    if (!flag && [self window]) {
+        [[self window] close];
+    }
+}
+
+- (void)windowWillClose:(NSNotification *)notification {
+    _savedDictionaryRepresentations = nil;
+    [self setWindow:nil];
+}
+
+- (void)_toggleVisible:(id)sender {
+    [self setControlsAreVisible:![self controlsAreVisible]];
+}
+
+- (void)installMenuWithKeyEquivalent:(NSString *)keyEquivalent modifierMask:(NSUInteger)mask {
+    NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:[self name] action:@selector(_toggleVisible:) keyEquivalent:keyEquivalent];
+    [menuItem setTarget:self];
+    [menuItem setKeyEquivalentModifierMask:mask];
+    
+    [[NSApp windowsMenu] addItem:menuItem];
+}
+#endif
 
 - (NSDictionary *)dictionaryRepresentation {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
@@ -628,6 +931,7 @@ CGPoint RectCenter(CGRect rect) {
     [self defaults];
 }
 
+#if TARGET_OS_IPHONE
 - (void)share {
     [self log];
     NSError *error = nil;
@@ -667,9 +971,32 @@ CGPoint RectCenter(CGRect rect) {
     [[self previousButton] setEnabled:(_currentSaveIndex > 0)];
 }
 
+#else
+- (void)save:(id)sender {
+    [self log];
+    NSSavePanel *savePanel = [NSSavePanel savePanel];
+    [savePanel setNameFieldStringValue:[[self name] stringByAppendingString:@".json"]];
+    [savePanel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger result) {
+        if (result == NSFileHandlingPanelOKButton) {
+            NSError *error = nil;
+            NSData *data = [NSJSONSerialization dataWithJSONObject:[self jsonRepresentation] options:NSJSONWritingPrettyPrinted error:&error];
+            if (!data) goto reportError;
+            if (![data writeToURL:[savePanel URL] options:NSDataWritingAtomic error:&error]) goto reportError;
+            return;
+            
+        reportError:
+            [[self window] presentError:error];
+        }
+    }];
+}
+
+- (void)validateButtons {
+}
+#endif
 
 @end
 
+#if TARGET_OS_IPHONE
 static UIColor *CalloutColor() {
     return [UIColor colorWithWhite:0.219f alpha:1.0];
 }
@@ -855,4 +1182,4 @@ static UIImage *CloseImage() {
     UIGraphicsEndImageContext();
     return closeImage;
 }
-
+#endif

@@ -61,8 +61,9 @@ Sample JSON:
 
 */
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
+@class UIGestureRecognizer, NSColor;
 
 @interface KFTunableSpec : NSObject
 
@@ -73,18 +74,25 @@ Sample JSON:
 - (double)doubleForKey:(NSString *)key;
 - (void)withDoubleForKey:(NSString *)key owner:(id)weaklyHeldOwner maintain:(void (^)(id owner, double doubleValue))maintenanceBlock;
 
-- (BOOL)boolForKey:(NSString *)defaultName;
+- (BOOL)boolForKey:(NSString *)key;
 - (void)withBoolForKey:(NSString *)key owner:(id)weaklyHeldOwner maintain:(void (^)(id owner, BOOL flag))maintenanceBlock;
 
+// color tuning not available on iOS - need to write a color picker!
+- (NSColor *)colorForKey:(NSString *)key NS_AVAILABLE_MAC(10_7);;
+- (void)withColorForKey:(NSString *)key owner:(id)weaklyHeldOwner maintain:(void (^)(id owner, NSColor *colorValue))maintenanceBlock NS_AVAILABLE_MAC(10_7);;
 
 // useful as a metrics dictionary in -[NSLayoutConstraint constraintsWithVisualFormat:options:metrics:views:]
 - (NSDictionary *)dictionaryRepresentation;
 
-
 #pragma mark Showing Tuning UI
 
-// convenience - a recognizer that sets controlsAreVisible on triple tap of two fingers
-- (UIGestureRecognizer *)twoFingerTripleTapGestureRecognizer;
+// this property shows/hides the tuning UI
 @property (nonatomic) BOOL controlsAreVisble;
+
+// ios convenience - a recognizer that calls -setControlsAreVisible: on triple tap of two fingers. Stick it on a view.
+- (UIGestureRecognizer *)twoFingerTripleTapGestureRecognizer NS_AVAILABLE_IOS(6_0);
+
+// mac convenience - install into window menu
+- (void)installMenuWithKeyEquivalent:(NSString *)keyEquivalent modifierMask:(NSUInteger)mask NS_AVAILABLE_MAC(10_7);
 
 @end
