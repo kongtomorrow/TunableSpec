@@ -10,6 +10,7 @@
 #import "KFTunableSpec.h"
 #import <QuartzCore/QuartzCore.h>
 
+
 static UIImage *CloseImage();
 static UIImage *CalloutBezelImage();
 static UIImage *CalloutArrowImage();
@@ -304,6 +305,19 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 
 @end
 
+@interface HitTransparentWindow : UIWindow
+@end
+@implementation HitTransparentWindow
+-(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *result = [super hitTest:point withEvent:event];
+    if (result == self) {
+        result = nil;
+    }
+    return result;
+}
+@end
+
+
 @interface KFTunableSpec () <UIDocumentInteractionControllerDelegate> {
     NSMutableArray *_KFSpecItems;
     NSMutableArray *_savedDictionaryRepresentations;
@@ -483,7 +497,7 @@ static NSMutableDictionary *sSpecsByName;
 
     // align edge of close button with contentView
     [contentView addConstraint:[NSLayoutConstraint constraintWithItem:closeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
-    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:closeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+    [contentView addConstraint:[NSLayoutConstraint constraintWithItem:closeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
 
     UIViewController *viewController = [[UIViewController alloc] init];
     [viewController setView:contentView];
@@ -509,29 +523,21 @@ CGPoint RectCenter(CGRect rect) {
         _currentSaveIndex = [_savedDictionaryRepresentations count];
         [self validateButtons];
         
-        CGSize size = [contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
-        CGSize limitSize = [[[UIApplication sharedApplication] keyWindow] frame].size;
-        size.width = MIN(size.width, limitSize.width);
-        size.height = MIN(size.height, limitSize.height);
-        CGRect windowBounds = CGRectMake(0, 0, size.width, size.height);
-        
-        
-        UIWindow *window = [[UIWindow alloc] init];
-        [window setBounds:windowBounds];
-        [window setCenter:RectCenter([[UIScreen mainScreen] applicationFrame])];
+        UIWindow *window = [[HitTransparentWindow alloc] init];
+        [window setFrame:[[UIScreen mainScreen] applicationFrame]];
         [window setRootViewController:viewController];
         
         [contentView setTranslatesAutoresizingMaskIntoConstraints:NO];
         [window addSubview:contentView];
         
-        // center contentView with autolayout, because we're going to resize window if we show the interaction controller
+        // center contentView
         id views = NSDictionaryOfVariableBindings(contentView);
-        id metrics = @{@"width" : @(size.width), @"height" : @(size.height)};
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[contentView(width)]" options:0 metrics:metrics views:views]];
-        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[contentView(height)]" options:0 metrics:metrics views:views]];
+        CGSize limitSize = [[[UIApplication sharedApplication] keyWindow] frame].size;
+        id metrics = @{@"widthLimit" : @(limitSize.width), @"heightLimit" : @(limitSize.height)};
+        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[contentView(<=widthLimit)]" options:0 metrics:metrics views:views]];
+        [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[contentView(<=heightLimit)]" options:0 metrics:metrics views:views]];
         [window addConstraint:[NSLayoutConstraint constraintWithItem:window attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
         [window addConstraint:[NSLayoutConstraint constraintWithItem:window attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-        
         
         [window makeKeyAndVisible];
         [self setWindow:window];
@@ -638,9 +644,6 @@ CGPoint RectCenter(CGRect rect) {
     UIDocumentInteractionController *interactionController = [UIDocumentInteractionController interactionControllerWithURL:tempFileURL];
     [self setInteractionController:interactionController];
     [interactionController setDelegate:self];
-    
-    [[self window] setFrame:[[[self window] screen] applicationFrame]];
-    [[self window] layoutIfNeeded];
     [interactionController presentOptionsMenuFromRect:[[self shareButton] bounds] inView:[self shareButton] animated:YES];
 }
 
@@ -654,8 +657,6 @@ CGPoint RectCenter(CGRect rect) {
 
 - (void)didFinishShare {
     [self setInteractionController:nil];
-    CGSize contentViewSize = [[[[self window] subviews] lastObject] frame].size;
-    [[self window] setBounds:(CGRect){CGPointZero, contentViewSize}];
 }
 
 - (void)close {
