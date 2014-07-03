@@ -434,9 +434,11 @@ static NSMutableDictionary *sSpecsByName;
         [label setText:[[def label] stringByAppendingString:@":"]];
         [label setTextAlignment:NSTextAlignmentRight];
         id views = lastControl ? NSDictionaryOfVariableBindings(label, control, lastControl) : NSDictionaryOfVariableBindings(label, control);
-        [views enumerateKeysAndObjectsUsingBlock:^(id key, id view, BOOL *stop) {
-            [view setTranslatesAutoresizingMaskIntoConstraints:NO];
-            [mainView addSubview:view];
+        [views enumerateKeysAndObjectsUsingBlock:^(NSString *key, id view, BOOL *stop) {
+            if (![key isEqualToString:@"lastControl"]) {
+                [view setTranslatesAutoresizingMaskIntoConstraints:NO];
+                [mainView addSubview:view];
+            }
         }];
         [mainView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[label]-[control]-(==20@700,>=20)-|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:views]];
         
