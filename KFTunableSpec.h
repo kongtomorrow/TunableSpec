@@ -85,6 +85,6 @@ Sample JSON:
 
 // convenience - a recognizer that sets controlsAreVisible on triple tap of two fingers
 - (UIGestureRecognizer *)twoFingerTripleTapGestureRecognizer;
-@property (nonatomic) BOOL controlsAreVisble;
+@property (nonatomic) BOOL controlsAreVisible;
 
 @end
