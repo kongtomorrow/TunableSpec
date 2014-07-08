@@ -435,7 +435,7 @@ static NSMutableDictionary *sSpecsByName;
         [label setTextAlignment:NSTextAlignmentRight];
         id views = lastControl ? NSDictionaryOfVariableBindings(label, control, lastControl) : NSDictionaryOfVariableBindings(label, control);
         [views enumerateKeysAndObjectsUsingBlock:^(NSString *key, id view, BOOL *stop) {
-            if (![key isEqualToString:@"lastControl"]) {
+            if (view != lastControl) {
                 [view setTranslatesAutoresizingMaskIntoConstraints:NO];
                 [mainView addSubview:view];
             }
