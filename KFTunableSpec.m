@@ -435,7 +435,7 @@ static NSMutableDictionary *sSpecsByName;
         [label setTextAlignment:NSTextAlignmentRight];
         id views = lastControl ? NSDictionaryOfVariableBindings(label, control, lastControl) : NSDictionaryOfVariableBindings(label, control);
         [views enumerateKeysAndObjectsUsingBlock:^(NSString *key, id view, BOOL *stop) {
-            if (view != lastControl) {
+            if (view != lastControl) { // lastControl is already a subview, and adding it again here can change the z-ordering such that it might obstruct a callout.
                 [view setTranslatesAutoresizingMaskIntoConstraints:NO];
                 [mainView addSubview:view];
             }
