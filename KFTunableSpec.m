@@ -510,10 +510,6 @@ static NSMutableDictionary *sSpecsByName;
     return [self window] != nil;
 }
 
-CGPoint RectCenter(CGRect rect) {
-    return CGPointMake(rect.origin.x + rect.size.width/2, rect.origin.y + rect.size.height/2);
-}
-
 - (void)setControlsAreVisible:(BOOL)flag {
     if (flag && ![self window]) {        
         UIViewController *viewController = [self makeViewController];
