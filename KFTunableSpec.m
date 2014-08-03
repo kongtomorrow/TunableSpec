@@ -318,7 +318,7 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 @end
 
 
-@interface KFTunableSpec () <UIDocumentInteractionControllerDelegate> {
+@interface KFTunableSpec () <UIDocumentInteractionControllerDelegate, UIGestureRecognizerDelegate> {
     NSMutableArray *_KFSpecItems;
     NSMutableArray *_savedDictionaryRepresentations;
     NSUInteger _currentSaveIndex;
@@ -537,7 +537,9 @@ static NSMutableDictionary *sSpecsByName;
         [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[contentView(<=widthLimit)]" options:0 metrics:metrics views:views]];
         [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[contentView(<=heightLimit)]" options:0 metrics:metrics views:views]];
 
-        [contentView addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveWindowWithReco:)]];
+        UIGestureRecognizer *moveWindowReco = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveWindowWithReco:)];
+        [contentView addGestureRecognizer:moveWindowReco];
+        [moveWindowReco setDelegate:self];
         
         [self setControlsXConstraint:[NSLayoutConstraint constraintWithItem:contentView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:window attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
         [self setControlsYConstraint:[NSLayoutConstraint constraintWithItem:contentView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:window attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
@@ -554,6 +556,16 @@ static NSMutableDictionary *sSpecsByName;
         [self setControlsXConstraint:nil];
         [self setControlsYConstraint:nil];
         [self setWindow:nil];
+    }
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    // it's disconcerting when you're going for a slider and move the window instead
+    UIView *hitView = [[gestureRecognizer view] hitTest:[gestureRecognizer locationInView:[gestureRecognizer view]] withEvent:nil];
+    if ([hitView isKindOfClass:[UIControl class]]) {
+        return NO;
+    } else {
+        return YES;
     }
 }
 
