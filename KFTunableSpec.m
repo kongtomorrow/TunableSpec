@@ -331,6 +331,8 @@ static NSString *CamelCaseToSpaces(NSString *camelCaseString) {
 @property UIButton *revertButton;
 @property UIButton *shareButton;
 @property UIButton *closeButton;
+@property NSLayoutConstraint *controlsXConstraint;
+@property NSLayoutConstraint *controlsYConstraint;
 
 @property UIDocumentInteractionController *interactionController; // interaction controller doesn't keep itself alive during presentation. lame.
 @end
@@ -534,8 +536,13 @@ static NSMutableDictionary *sSpecsByName;
         id metrics = @{@"widthLimit" : @(limitSize.width), @"heightLimit" : @(limitSize.height)};
         [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[contentView(<=widthLimit)]" options:0 metrics:metrics views:views]];
         [contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[contentView(<=heightLimit)]" options:0 metrics:metrics views:views]];
-        [window addConstraint:[NSLayoutConstraint constraintWithItem:window attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
-        [window addConstraint:[NSLayoutConstraint constraintWithItem:window attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+
+        [contentView addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveWindowWithReco:)]];
+        
+        [self setControlsXConstraint:[NSLayoutConstraint constraintWithItem:contentView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:window attribute:NSLayoutAttributeCenterX multiplier:1 constant:0]];
+        [self setControlsYConstraint:[NSLayoutConstraint constraintWithItem:contentView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:window attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
+        [window addConstraint:[self controlsXConstraint]];
+        [window addConstraint:[self controlsYConstraint]];
         
         [window makeKeyAndVisible];
         [self setWindow:window];
@@ -544,7 +551,28 @@ static NSMutableDictionary *sSpecsByName;
         UIWindow *window = [self window];
         [window setHidden:YES];
         _savedDictionaryRepresentations = nil;
+        [self setControlsXConstraint:nil];
+        [self setControlsYConstraint:nil];
         [self setWindow:nil];
+    }
+}
+
+- (void)moveWindowWithReco:(UIPanGestureRecognizer *)reco {
+    switch (reco.state) {
+        case UIGestureRecognizerStateBegan: {
+            [reco setTranslation:CGPointMake([[self controlsXConstraint] constant], [[self controlsYConstraint] constant]) inView:[self window]];
+            break;
+        }
+        case UIGestureRecognizerStateChanged: {
+            CGPoint trans = [reco translationInView:[self window]];
+            [[self controlsXConstraint] setConstant:trans.x];
+            [[self controlsYConstraint] setConstant:trans.y];
+        }
+        case UIGestureRecognizerStatePossible:
+        case UIGestureRecognizerStateEnded:
+        case UIGestureRecognizerStateCancelled:
+        case UIGestureRecognizerStateFailed:
+            break;
     }
 }
 
