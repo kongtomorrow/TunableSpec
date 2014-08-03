@@ -23,7 +23,7 @@ CGFloat dur = [spec doubleForKey:@"SpringDuration"];
 CGFloat damp = [spec doubleForKey:@"SpringDamping"];
 ```
 
-Besides simple getters, "maintain" versions are provided live UI updates. The maintenance block will be called whenever the value changes due to being tuned. For example, with
+Besides simple getters, "maintain" versions are provided for live UI updates. The maintenance block is called whenever the value changes due to being tuned. For example, with
 
 ```objc
 [spec withDoubleForKey:@"LabelText" owner:self maintain:^(id owner, double doubleValue) {
@@ -31,7 +31,7 @@ Besides simple getters, "maintain" versions are provided live UI updates. The ma
 }];
 ```
 
-the label text will live-update as you dragged the tuning slider.
+the label text will live-update as you drag the tuning slider.
 
 The values come from a JSON file that looks like this:
 
